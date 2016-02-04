@@ -250,7 +250,9 @@
 
 			deltaY = e.deltaY;  //e.deltaY is representing the value of scroll if deltaY is positive this 
 			//means that wheel is going down if deltaY is negative the wheel is rolling up . Read more https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent/deltaY 
-			
+
+			e.preventDefault();  //Prevent the page from scrolling
+
 			scrollTime = 400;  //Time of the zoom animation in milliseconds
 
 			if(Math.abs(deltaY) == deltaY){ //If deltaY is positive or 0  (scroll down) 
@@ -327,6 +329,7 @@
 
 					case 38:
 
+						e.preventDefault();
 						disp = {x:0,y:keyUnit};
 						updateTransform(disp,'transform');
 
@@ -334,6 +337,7 @@
 
 					case 39:
 
+						e.preventDefault();
 						disp = {x:keyUnit*-1,y:0};
 						updateTransform(disp,'transform');
 
@@ -341,6 +345,7 @@
 
 					case 37:
 
+						e.preventDefault();
 						disp = {x:keyUnit,y:0};
 						updateTransform(disp,'transform');
 
@@ -348,6 +353,7 @@
 
 					case 40:
 
+						e.preventDefault();
 						disp = {x:0,y:keyUnit * -1};
 						updateTransform(disp,'transform');
 
