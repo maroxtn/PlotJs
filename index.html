@@ -57,6 +57,7 @@
 
   <script>
   
+    
   var container = document.getElementById('canvas');
 
   var plane = new Plot({
@@ -69,12 +70,27 @@
 
   });
 
-  var polynominal = plane.plot({
+  plane.plot({
 
     equation: function(x){ return Math.sin(x) * 5; },
+    borderColor: 'blue',
+    borderThickness: 4
 
   });
 
+  plane.plot({
+
+    equation: function(x){ return 1/x; },
+    borderColor: 'red',
+
+  });
+
+  plane.plot({
+
+    equation: function(x){ return x*x; },
+    borderColor: 'green'
+
+  });
 
   </script>
   </body>
