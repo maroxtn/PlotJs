@@ -1,1 +1,72 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Parse</title>
+	<script src="js/equationParse.js"></script>
+	<script src="js/plot.js"></script>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<style>
+	
+	#canvas{
+		margin: auto;
+	}
+
+	h1{
+		text-align: center;
+		font-family: arial;
+		font-size: 40px;
+	}
+
+</style>
+
+<body>
+
+<h1>PlotJs</h1>
+<div id="canvas" height="600px" width="800px"></div>
+
+</body>
+<script>
+	
+	var container = document.getElementById('canvas');
+
+	var plane = new Plot({
+
+		container: container,
+		height: '400px',
+		width: '800px',	
+		min: -15,
+		max: 15,	
+
+	});
+
+	plane.plot({
+
+		equation: function(x){ return Math.sin(x) * 5; },
+		borderColor: 'blue',
+		borderThickness: 4
+
+	});
+
+	plane.plot({
+
+		equation: function(x){ return 1/x; },
+		borderColor: 'red',
+
+	});
+
+	plane.plot({
+
+		equation: function(x){ return x*x; },
+		borderColor: 'green'
+
+	});
+
+</script>
+</html>
+=======
 Hello World
+>>>>>>> 642baff46f5322d398c8db4745271bb179f6b83a
