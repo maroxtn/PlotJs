@@ -69,14 +69,14 @@ var plane = new Plot(setting);
 This is the default setting of the function plot:
 ```javascript
 
-			var plotDefault = { 
+	var plotDefault = { 
 
-				borderColor: 'green', //String
-				borderThickness: 3,  //Integer
-				equation: (typeof fn.equation === 'function') ? function(){ return; } : '',  //Depends on the type of the equation variable
-				resolution: iteration 
+		borderColor: 'green', //String
+		borderThickness: 3,  //Integer
+		equation: (typeof fn.equation === 'function') ? function(){ return; } : '',  //Depends on the type of the equation variable
+		resolution: iteration 
 
-			};
+	};
 ```
 
 To see the full documentation open: http://abdesaslem.github.io/PlotJs/
