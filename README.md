@@ -81,3 +81,26 @@ This is the default setting of the function plot:
 
 To see the full documentation open: http://abdesaslem.github.io/PlotJs/
 
+### Other methods:
+
+1. **Destroy:** Delete the plane
+```javascript
+    plane.destroy();
+```
+
+2. **destroyFunction**: remove a function from the plane
+```javascript
+    var fn = plane.function('4x+23');
+    plane.destroyFunction(fn)
+```
+
+3. **Clear**: clear the plane
+```javascript
+    plane.clear();
+```
+
+# Licence
+
+[The GNU General Public License v3.0](https://help.github.com/articles/basic-writing-and-formatting-syntax/)
+
+
