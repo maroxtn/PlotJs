@@ -1,4 +1,12 @@
-// Create an immediately invoked functional expression to wrap our code
+/*
+ *  PlotJs
+ *  Abdessalem Boukil 2016
+ *  The GNU General Public License v3.0
+ *  http://abdesaslem.github.io/PlotJs/
+ *
+ */
+ 
+
 (function() {
 
 	MATH_EXTENDED={};  //Math function extended
@@ -46,6 +54,7 @@
     	var options = [],
     		O = {},
     		rangeX,
+    		ctx,
     		rangeY,
     		Unit,
     		iteration,
@@ -56,12 +65,8 @@
         var defaults = {
 
             container: '', //Required
-            max: 30,    //Integer
-            min: -30,	 //Integer
-            minWidth: 280, //Integer
-            lineUnit: 2, //Integer         
-            lines1: true,  //Boolean
-            lines2: true,  //Boolean
+            max: 21,    //Integer
+            min: -21,	 //Integer     
             strokeThickness: 3, //Integer 
             strokeColor: 'black',  //String
             lineColor1: "#AAAAAA", //String             Thick guidelines 
@@ -69,7 +74,6 @@
             backgroundColor: 'white', //String
             zoom: true, //Boolean
             navigation: true, //Boolean
-            fullScreen: true,  //Boolean
             height: '400px', //String
             width: '400px',  //String
             errorReporting: true, //Boolean
@@ -78,8 +82,9 @@
             tickThickness: 2, //Integer
             tickColor: 'black', //String
             tickHeight: 16,  //Integer
-            keyNavSpeed: 1, //Integer
+            keyNavSpeed: 1, //Double
             fontSize: 10, //Integer (in px)
+            fontColor: 'black',//String
             dispCallback: function(disp){	return true;	},  //Function, A callback function after a mouse displacement had occured
             zommCallback: function(){	return true;	}  //Function, A callback function after zoom
 
@@ -101,7 +106,7 @@
         container.style.height = parseInt(options.height,10) + 'px';
         container.style.width = parseInt(options.width,10) + 'px';
 
-        if(window.getComputedStyle(container).position != 'absolute')  //If the position is absolute does not change the position to relative
+        if(window.getComputedStyle(container).position != 'absolute' && window.getComputedStyle(container).position != 'fixed')  //If the position is absolute does not change the position to relative
         	container.style.position = 'relative';
 
         var canvasContainer = document.createElement('div');  //The container of the canvas
@@ -123,6 +128,28 @@
  		point.style.top = '0px';
  		point.style.left = '0px';
 		canvasContainer.appendChild(point);
+
+		var fullScreenIcon = document.createElement('div');
+		fullScreenIcon.style.position = 'absolute';
+		fullScreenIcon.style.bottom = '2%';
+		fullScreenIcon.style.left = '2%';
+		fullScreenIcon.style.zIndex = 444;
+		fullScreenIcon.style.cursor = 'pointer';
+		fullScreenIcon.style.opacity = '0.4';
+
+		var alreadyFullscreen = arguments[1];
+		if(alreadyFullscreen == true){
+
+			fullScreenIcon.title = 'Go Back';
+			fullScreenIcon.innerHTML = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCUlEQVRYhe2XUQrCMBAFR7xj623aI0jFIxTEekQhfpiUGDebhKYq2Af7k6XMlA1lC8/sgCNwQE+X6AP0iX4DDJY5w0+AAe5Aq8BNhoBRJBrLMMDZSRztgStJovP6OQKShA93NcQavkQX9HIFfIk2wphHHpOYgrNSAQPcEi84R5KQqlQgLO2eZUksEVDhLtcVBabUw+GFW2ME/RJ4DQFRIhdeS+BFogReU0Adx5YtW/4rP/Eh+uqnuFSihsAbvERiqUAU7vLVhUTaXmsKqCtZDrzGCESJ2N7+kbU8Bv/Ej0kLMGp2gkSuQB+cSxIjwB64KPBQIkcghEsSF8vGSYwK3JdIJQb3JUYHfwAnXYXTAAFAnAAAAABJRU5ErkJggg=="/>';
+		
+		}else{
+
+			fullScreenIcon.title = 'Go Fullscreen';
+			fullScreenIcon.innerHTML = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACI0lEQVRYhbXXTYhOURzH8c8Ys5iiWQ0SC2KhsbCw8pYFGxElO0lYWCgbG2pqKGEzJQsvWShZKDZko2GhSWlKiZkGKVaTspokNDOPxb1Ht6fnueeeO8/zr1vPOf3u+X5P95x7zwMvMY1XeIjruIDj2IctWIUe6bUU67EXp3EZ93PWVzyH92hErllsTACvwyf8jYw7Ac8qwLcnzhyGK0zsKdwsCcxjRw14VYm7ZM+7LHRbvecPZ7BQMvYlOBoRaOBODYkYvJFnbKsgkCpRBd7AYVjR1Dm3SIkYvLgz/i/u2bzjPI5EJMrWRJVnvgs/8/aGcOPbHB6qjkQMfrGQ3ZlL9IeOwRaziUncKkikwEOtbdGXJPEBfXluMhGeVK0kpmTfh1Cr8bEb8FYSzfCixHQ34EWJiTbwosQURjoNT6m6r+1KA/d2a/BY9eKe7CCxvCQ3gBc41Q14WFzjbSQG8DrPLHRKohneTqIID9eiJdrBw/WkkB1vk6kk0Yc1ifA/OFjIXynJtpNYGX5sxgw21YSHupogcQLfQmNPHprJZWLwQy3gVSVO5vD5vN0Px5oAdeFVJeYL7SE4V3JDKjzUtQpjNnAARjsMT5E4Cw8i8FYLrlMSozBWEpiTrZG6NYRfJeM/Ivt8llnWlRjC98jYb+BHJPQb77AsAT5YAR62vs+yf7JjsnfAiGyv7pYdHJckzTurHtnhZCv2y/b/MG7gsezV/QWT/wBzNcUpz04e1gAAAABJRU5ErkJggg=="/>';
+		
+		}
+		container.appendChild(fullScreenIcon);
 
 		var ctxPoint = point.getContext("2d");   //Get the context of it
 
@@ -147,7 +174,7 @@
         contCords = container.getBoundingClientRect();
 
         // Create global element references
-		ctx = canvas.getContext("2d");
+		ctx = canvas.getContext("2d"); 
 
 		width = canvas.width;
 		height = canvas.height;	
@@ -175,11 +202,12 @@
 			scaleSize = 0.2;
 
 		init(); //Initialize the plane
-		canvasContainer.style.cursor = 'grab';
+
+		if(options.navigation)	canvasContainer.style.cursor = 'grab';
 
 		canvasContainer.addEventListener("mousedown",function(e){
 
-			if(e.which == 1){  //If the left pointer of the mouse is clicked
+			if(e.which == 1 && options.navigation){  //If the left pointer of the mouse is clicked
 
 				canvasContainer.style.cursor = "grabbing";
 				start.x = e.screenX;  //Update the start position to the user mouse coordinates
@@ -220,7 +248,7 @@
 			}else{
 
 				var cords = normalizeCords({x: e.clientX, y:e.clientY});
-				ctxPoint.clearRect(0,0,canvas.width,canvas.height);;
+				ctxPoint.clearRect(0,0,canvas.width,canvas.height);
 
 				ctxPoint.save();
 				ctxPoint.translate(O.x,O.y);
@@ -248,6 +276,8 @@
 
 
 		canvasContainer.addEventListener("wheel",function(e){  //When the user scroll the mouse wheel
+
+			if(!options.zoom) return false;
 
 			deltaY = e.deltaY;  //e.deltaY is representing the value of scroll if deltaY is positive this 
 			//means that wheel is going down if deltaY is negative the wheel is rolling up . Read more https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent/deltaY 
@@ -320,11 +350,22 @@
 
 		});
 
+		canvasContainer.addEventListener('mouseenter',function(){  //To keep track where the mouse is (is it hover on the container or not)
+			this.setAttribute('class','plotjs-hovered');
+		});
+
+		canvasContainer.addEventListener('mouseleave',function(){
+			this.setAttribute('class','');
+		})
+
 		document.body.addEventListener("keydown",function(e){
+
+			if(canvasContainer.getAttribute('class') != 'plotjs-hovered') return false;  //If the object is not plotjs-hovered
+			if(!options.navigation) return false;
 
 			var key = e.which,disp;
 
-			if(key == 38 || key == 39 || key == 37 || key == 40){
+			if(key == 38 || key == 39 || key == 37 || key == 40  || key == 122 || key == 27){
 
 				switch(key){
 
@@ -358,13 +399,62 @@
 						disp = {x:0,y:keyUnit * -1};
 						updateTransform(disp,'transform');
 
-					break;0
+					break;
+
+					case 122:
+
+						e.preventDefault();
+						goFullScreen();
+
+					break;
+
+					case 27: if(alreadyFullscreen == true) goFullScreen(); break;
 				
 				}
 
 			}
 
 		});
+
+		fullScreenIcon.addEventListener('click',function(){goFullScreen();})
+		canvasContainer.addEventListener('dblclick',function(){goFullScreen();}); //On double click go fullscreen
+
+		function goFullScreen(){  //Handle fullscreen
+
+			if(alreadyFullscreen == true){  //If already fullscreen go back normal
+				Plot.prototype.destroy();
+				return false;
+			}
+
+			var newContainer = document.createElement('div');	//Create a new fullscreen div
+			newContainer.style.height = window.innerHeight + 'px';
+			newContainer.style.width = window.innerWidth + 'px';
+			newContainer.style.position = 'fixed';
+			newContainer.style.top = '0px';
+			newContainer.style.left = '0px';
+			newContainer.style.zIndex = 9999999;
+			document.body.appendChild(newContainer);
+
+			options.height = window.innerHeight;  //Edit the configuration
+			options.width = window.innerWidth;
+			options.container = newContainer;
+
+			var newPlane = new Plot(options,true);  //Create plane
+
+			for(var i=0;i<functions.length;i++){  //Plot the functions again
+
+				newPlane.plot({
+
+					equation: functions[i].fn,
+					borderThickness: functions[i].settings.borderThickness,
+					borderColor: functions[i].settings.borderColor,
+					resolution: functions[i].settings.resolution
+
+				})
+
+			}
+
+		}
 
 		function init(){  //Initialize the plane (Private)
 			
@@ -377,12 +467,14 @@
 			ctx.moveTo(O.x,0);
 			ctx.lineTo(O.x,height);
 			ctx.lineWidth = options.strokeThickness;
+			ctx.strokeStyle = strokeColor;
 			ctx.stroke();
 
 			ctx.beginPath();      //Draw the X axes
 			ctx.moveTo(0,O.y); 
 			ctx.lineTo(width,O.y); 
 			ctx.lineWidth = options.strokeThickness;
+			ctx.strokeStyle = strokeColor;
 			ctx.stroke();
 
 			ctx.save();  //Save the the transformation of the plane
@@ -402,7 +494,7 @@
 
 				tickPos = i*Unit;  //Calculate the position of the 
 
-				if(i%thickLinePer == 0 && options.lines2){   //This line draw a thicker line every `thickLinePer`(integer)
+				if(i%thickLinePer == 0){   //This line draw a thicker line every `thickLinePer`(integer)
 					ctx.beginPath();     
 					ctx.moveTo(tickPos,O.y * -1);  //Move to the top of the plane
 					ctx.lineTo(tickPos,height - O.y);  //Draw line to the bottom
@@ -410,7 +502,7 @@
 					ctx.strokeStyle = options.lineColor1;
 					ctx.stroke();
 				}
-				else if(options.lines2){  //Draw a lighter line as a secondary guideline less visible
+				else{  //Draw a lighter line as a secondary guideline less visible
 					ctx.beginPath();     
 					ctx.moveTo(tickPos,O.y * -1);
 					ctx.lineTo(tickPos,height - O.y);
@@ -428,7 +520,7 @@
 
 				var text = Math.round(i*tenFactor)/tenFactor;
 				ctx.font = 	tickFontSize + "px Lucida Sans Unicode";  //Draw the text
-				ctx.fillStyle = "black";
+				ctx.fillStyle = options.fontColor;
 				ctx.fillText(text,tickPos-tickFontSize/2,-10);   //Shif the X position of the text by the half of the font size so it's mor readable
 
 			}
@@ -464,7 +556,7 @@
 
 				var text = Math.round(i*tenFactor)/tenFactor;
 				ctx.font = 	tickFontSize + "px Lucida Sans Unicode";
-				ctx.fillStyle = "black";
+				ctx.fillStyle = options.fontColor;
 				ctx.fillText(text,tickPos-tickFontSize/2,-10);
 
 			}
@@ -474,7 +566,7 @@
 
 				tickPos = i*Unit; 
 
-				if(i%thickLinePer == 0 && options.lines2){   
+				if(i%thickLinePer == 0){   
 					ctx.beginPath();     
 					ctx.moveTo(O.x * -1,tickPos); 
 					ctx.lineTo(width - O.x,tickPos);  
@@ -482,7 +574,7 @@
 					ctx.strokeStyle = options.lineColor1;
 					ctx.stroke();
 				}
-				else if(options.lines2){
+				else{
 					ctx.beginPath();     
 					ctx.moveTo(O.x * -1,tickPos);  
 					ctx.lineTo(width - O.x,tickPos);  
@@ -501,7 +593,7 @@
 
 				var text = Math.round(i*tenFactor)/tenFactor;
 				ctx.font = 	tickFontSize + "px Lucida Sans Unicode";  
-				ctx.fillStyle = "black";
+				ctx.fillStyle = options.fontColor;
 				ctx.fillText(text * -1,-30,tickPos-tickFontSize/2);   //Invert the I 
 
 			}
@@ -511,7 +603,7 @@
 
 				tickPos = i*Unit; 
 
-				if(i%thickLinePer == 0 && options.lines2){   
+				if(i%thickLinePer == 0){   
 					ctx.beginPath();     
 					ctx.moveTo(O.x * -1,tickPos); 
 					ctx.lineTo(width - O.x,tickPos);  
@@ -519,7 +611,7 @@
 					ctx.strokeStyle = options.lineColor1;
 					ctx.stroke();
 				}
-				else if(options.lines2){
+				else{
 					ctx.beginPath();     
 					ctx.moveTo(O.x * -1,tickPos);  
 					ctx.lineTo(width - O.x,tickPos);  
@@ -538,7 +630,7 @@
 
 				var text = Math.round(i*tenFactor)/tenFactor;
 				ctx.font = 	tickFontSize + "px Lucida Sans Unicode";  
-				ctx.fillStyle = "black";
+				ctx.fillStyle = options.fontColor;
 				ctx.fillText(text * -1,-30,tickPos-tickFontSize/2);    //Invert the i
 
 			} 
@@ -556,11 +648,11 @@
 			canvasContainer.style.transform = '';
 			canvasContainer.style.left = '0px';
 			canvasContainer.style.top = '0px';
+			ctxPoint.clearRect(0,0,canvas.width,canvas.height)
 
 			if(typeof args[0] === 'object' && args[1] == 'transform'){  //Handle mouse displacement
 
 				var disp = args[0]; 
-				options.dispCallback(disp);  //Call the callback function defined by user
 
 				if(disp.x == 0 && disp.y == 0) return; //No displacement 
 
@@ -578,6 +670,8 @@
 
 				for(var j = 0;j<functions.length;j++)  //Plot all the functions after any transform
 					drawPlot(functions[j].fn,functions[j].settings);
+
+				options.dispCallback(disp);  //Call the callback function defined by user
 
 			}
 
@@ -603,6 +697,8 @@
 
 				for(var j = 0;j<functions.length;j++)  //Plot all the functions after any transform
 					drawPlot(functions[j].fn,functions[j].settings);
+
+				options.zommCallback();
 
 			}
 
