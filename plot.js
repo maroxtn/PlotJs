@@ -5,7 +5,7 @@
  *  http://abdesaslem.github.io/PlotJs/
  *
  */
- 
+
 
 (function() {
 
@@ -58,6 +58,10 @@
     		rangeY,
     		Unit,
     		iteration,
+    		maxX,
+    		minX,
+    		maxY,
+    		minY,
     		functions = [], //The array which containes the function
     		keyUnit;   //The variable which will hold the unit of keyboard navigation
 
@@ -677,6 +681,7 @@
 
 			else if(typeof args[0] === 'object' && args[1] == 'zoom' && typeof args[2] == 'string'){  //Zoom displacement
 
+				console.log(scale);
 				var type = args[2],
 					factor = 0;
 
