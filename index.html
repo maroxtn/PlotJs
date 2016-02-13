@@ -25,11 +25,11 @@
     <section class="main-content">
       <h3>
 <a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What is Plotjs ?</h3>
-<?php echo 'kkk'; ?>
+
 <p>Plotjs is a fully customizable and open source JavaScript plugin for plotting Math function, it may be useful either in educational or scientifical fields.</p>
 <p>It is released under the GNU <a target="_blank" href="http://www.gnu.org/licenses/gpl-3.0.en.html">The GNU General Public License v3.0</a></p>
 <b>Demo: </b>
-<p>This is the plot of :  <pre>f(x) = sin(x)*5 ,  f(x) = 1/x and f(x) = x^2</pre></p>
+<p>This is the plot of :  <pre class="brush: js;">f(x) = sin(x)*5 ,  f(x) = 1/x and f(x) = x^2</pre></p>
 
 <div id="canvas" height="600px" width="800px"></div>
 
@@ -40,12 +40,12 @@
 <a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to use it ?</h3>
 
 <p>Using PlotJs is as simple as could it be, first of all link it to your code:</p>
-<pre>&lt;script type=&quot;text/javascript&quot; src=&quot;plotjs.min.js&quot;&gt;&lt;/script&gt;</pre>
+<pre class="brush: js;">&lt;script type=&quot;text/javascript&quot; src=&quot;plotjs.min.js&quot;&gt;&lt;/script&gt;</pre>
 <p>The div which will contain the plane in it:</p>
-<pre>&lt;div id=&quot;plot&quot;&gt;&lt;/div&gt;</pre>
+<pre class="brush: js;">&lt;div id=&quot;plot&quot;&gt;&lt;/div&gt;</pre>
 <p><b>IMPORTANT:</b> the container should be a div</p>
 <p>Then create the plane object and plot the function: </p>
-<pre>var plane = new Plot({
+<pre class="brush: js;">var plane = new Plot({
     container: document.getElementById('plot')
 });
 
