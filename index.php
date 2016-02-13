@@ -25,7 +25,7 @@
     <section class="main-content">
       <h3>
 <a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What is Plotjs ?</h3>
-
+<?php echo 'kkk'; ?>
 <p>Plotjs is a fully customizable and open source JavaScript plugin for plotting Math function, it may be useful either in educational or scientifical fields.</p>
 <p>It is released under the GNU <a target="_blank" href="http://www.gnu.org/licenses/gpl-3.0.en.html">The GNU General Public License v3.0</a></p>
 <b>Demo: </b>
