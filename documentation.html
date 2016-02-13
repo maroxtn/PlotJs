@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Plotjs by Abdesaslem</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link type="text/css" rel="stylesheet" href="stylesheets/shCoreDefault.css"/>  
+    <script type="text/javascript" src="js/shCore.js"></script>
+    <script type="text/javascript" src="js/shBrushJScript.js"></script>
+    <script src="plugin/plot.js"></script>
+    <style>
+
+    .syntaxhighlighter table{
+      overflow: hidden !important; 
+    }
+
+    .main-content table th, .main-content table td{
+      border: 0 !important;
+    }
+
+    .main-content code{  border-radius: 0 !important; background-color: #ebeef2 !important; }
+    code.config{
+      background-color: rgb(62, 62, 62) !important;
+      color: white;
+    }
+
+    </style>
+  </head>
+  <body>
+
+      <section class="main-content">
+        <h1><b>Documentation</b></h1>
+        <span>Everything you will need to know about PlotJs</span>
+        <hr/>
+        <h2>Getting Started</h2>
+        <p>In order to use PlotJs you need to include it to your project</p>
+        <pre>&lt;script type=&quot;text/javascript&quot; src=&quot;plotjs.min.js&quot;&gt;&lt;/script&gt;</pre>
+        <p>To create a basic graph using PlotJs you only need to create the plane then plot the function<p>
+        <pre class="brush: js">
+        var plane = new Plot({
+            container: document.getElementById('plot')
+        });
+
+        plane.plot('sin(x)*5'); 
+        </pre>
+        <p><b>Note:</b> You can either plot the function as a string <code>sin(x)*5</code> or <code>3x^2-5x+3</code> or you can declare it explicitly using a javascript native function . <br/> This function is equivalent the previously delared function</p>
+        <pre class="brush: js">
+        plane.plot(function(x){
+            return Math.sin(x)*10;
+        });
+        </pre>
+        <p>You can be more creative and do this: </p>
+        <pre class="brush: js">
+        plane.plot(function(x){
+
+           if(x < 0)
+              return Math.cos(x)*5;
+           else if(Math.round(x) == 0)
+              return Math.pow(x,2);
+           else
+              return x;
+
+        });  
+        </pre>
+        <p><code>X</code> is the variable of the X axes</p>
+        <h2>Plane Configuration</h2>
+        <p>This is are the plane default configuration you don't need to copy them each time you create a plane, you can change what ever you want to suit your needs</p>
+        <pre class="brush: js">
+        var defaults = {
+
+            container: '', //Required
+            max: 21,    //Integer
+            min: -21,  //Integer     
+            strokeThickness: 3, //Integer 
+            strokeColor: 'black',  //String
+            lineColor1: "#AAAAAA", //String        
+            lineColor2: "#DDDDDD",  //String           
+            backgroundColor: 'white', //String
+            zoom: true, //Boolean
+            navigation: true, //Boolean
+            height: '400px', //String
+            width: '400px',  //String
+            errorReporting: true, //Boolean
+            foregroundColor: '#EEEEEE', //String
+            guidelines: true,
+            tickThickness: 2, //Integer
+            tickColor: 'black', //String
+            tickHeight: 16,  //Integer
+            keyNavSpeed: 1, //Double
+            fontSize: 10, //Integer (in px)
+            fontColor: 'black',//String
+            //Function, A callback function after a mouse displacement had occured
+            dispCallback: function(disp){ return true;  },  
+            //Function, A callback function after zoom
+            zommCallback: function(){ return true;  }  
+
+        }
+        </pre>
+        <ul>
+          <li><code class="config">Container</code>: The container is the <b>div</b> that will contain the canvas of the plane</li>
+          <li><code class="config">Max</code>: The Maximum value of the plane</li>
+          <li><code class="config">Min</code>: The Minimum value of the plane</li>
+          <li><code class="config">strokeThickness</code>: The thickness of the line that devides the plane</li>    
+          <li><code class="config">strokeColor</code>: The color of the stroke (<code>RGBA or HEX or RGB</code>)</li>              
+          <li><code class="config">lineColor1</code>: The color of the guidelines of the plane</li>  
+          <li><code class="config">lineColor1</code>: The color of the secondary guidelines of the plane</li>  
+          <li><code class="config">backgroundColor</code>: The background color of the plane</li>
+          <li><code class="config">Zoom</code>: Zoomable or not (<code>Boolean</code>)</li>
+          <li><code class="config">Navigation</code>: Enable the navigation inside the plane</li>
+          <li><code class="config">Height, Width</code>: Specify the height and the width of plane</li>
+          <li><code class="config">foregroundColor</code>: The color of the foreground </li>
+          <li><code class="config">guidelines</code>: Use guidelines or not (it's recommended on low performance machines)</li>
+          <li><code class="config">tickThickness</code>: The thickness of the tick line </li>
+          <li><code class="config">tickColor</code>: The color of the tick line </li>
+          <li><code class="config">tickHeight</code>: The height of the tick in px</li>
+          <li><code class="config">keyNavSpeed</code>: The speed of the navigation using the keyboard</li>
+          <li><code class="config">fontSize</code>: The size of the font</li>
+          <li><code class="config">fontColor</code>: The color of the font</li>
+          <li><code class="config">dispCallback(disp)</code>: Callback when you the navigate in the plane, it takes <code>disp</code> as parameter, <code>disp</code> is an <code>object</code> which contains <code>disp.x</code> and <code>disp.y</code></li>
+          <li><code class="config">zommCallback</code>: The callback on zoom</li>        
+        </ul>
+        <p><b>Note:</b> if the container is not set the plugin will not work and it will return an error !</p>
+
+        <h2>Function Configuration</h2>
+        <pre class="brush: js">
+
+        var plotDefault = {  
+
+          borderColor: 'green', //String
+          borderThickness: 3,  //Integer
+          equation: (typeof fn.equation === 'function') ? function(){ return; } : '', 
+          resolution: iteration //Better to not change it  
+
+        };
+        </pre> 
+        <li><code class="config">borderColor</code>: The color of the function curve</li>
+        <li><code class="config">borderThickness</code>: The thickness of the curve</li>
+        <li><code class="config">equation</code>: The equation of the function</li>
+        <li><code class="config">resolution</code>: The step that the loop take each time when it draws a new point, the high the value the better the results the lower the performance</li>    
+        <p><b>Note:</b> if the equation is not set the curve will not be drawn and the plugin will return an error !</p>
+        <p><b>Note:</b> there is two type of usage of the <code>plot</code> method the first one is <code>plane.plot(theFunction)</code> or with the configuration</p>
+        <pre class="brush: js">
+          
+          plane.plot('4x+3'); //The minimal usage with string as function
+
+          plane.plot({
+
+            borderColor: 'blue',
+            equation: '4x+3'
+
+          });   
+
+          plane.plot({
+
+                    //You can use the function as string or native function
+            equation: function(x){ return 4*x+3; }, 
+            borderColor: 'blue'
+
+          })
+
+        </pre>
+        <h2>Other Methods</h2>
+        <h3>Destroy</h3>
+        <p>To raze all the plane with its function use <code>destroy</code></p>
+        <b>Example</b>
+        <pre class="brush: js">
+          
+          var plane = new Plot({
+            container: document.getElementById('plot')
+          }).plot('sin(x)*5');
+
+          plane.destroy();
+
+        </pre>
+        <h3>Clear</h3>
+        <p><code>clear</code> is used when you want to delete all the function and clearup the plane</p>
+        <b>Example</b>
+        <pre class="brush: js">
+          
+          var plane = new Plot({
+            container: document.getElementById('plot')
+          }).plot('sin(x)*5');
+
+          plane.clear();
+
+        </pre>
+
+        <h3>destroyFunction</h3>
+        <p><code>destroyFunction</code> is used to raze a function and keep the others</p>
+        <b>Example</b>
+        <pre class="brush: js">
+          
+          var plane = new Plot({
+            container: document.getElementById('plot')
+          });
+
+          var fn = plane.plot('4x+3'),
+              f2 = plane.plot('cos(1/x)');
+
+          plane.destroyFunction(fn);
+
+        </pre>
+
+        <h2>License</h2>
+        <p>It is released under the GNU <a target="_blank" href="http://www.gnu.org/licenses/gpl-3.0.en.html">The GNU General Public License v3.0</a></p>
+
+      </section>
+
+  <script type="text/javascript">
+       SyntaxHighlighter.all()
+  </script>
+  </body>
+</html>
